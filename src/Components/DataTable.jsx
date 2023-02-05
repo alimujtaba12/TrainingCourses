@@ -81,16 +81,17 @@ const DataTable = () => {
 
     useEffect(() => {
         if (filteredParam?.categories.length && filteredParam?.locations.length) {
-            console.log(filteredParam);
             setLoading(true);
             axios.post(API_ENDPOINT, filteredParam)
-                .then(function (response) {
-                    setFilteredDataData(response);
+                .then(function (res) {
+                    setFilteredDataData(res);
+                    setCurrentPage(res?.courses?.current_page);
+                    setLastPage(res?.courses?.last_page)
                     setLoading(false);
                 })
                 .catch(function (error) {
                     setLoading(false);
-                   alert(error);
+                    alert(error);
                 });
         }
 
@@ -98,7 +99,9 @@ const DataTable = () => {
 
     useEffect(() => {
         if (filteredData !== undefined) {
+            setLoading(true);
             setData(filteredData?.data);
+            setLoading(false);
         }
     }, [filteredData])
 
@@ -157,34 +160,38 @@ const DataTable = () => {
                 ) : (
                     <>
                         <TableContainer>
-                            <table>
-                                <thead>
-                                    <tr>
-                                        <th>Course</th>
-                                        <th>ID</th>
-                                        <th>Price</th>
-                                        <th>Location</th>
-                                        <th>Dates</th>
-                                        <th>Link</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {data && data.courses.data.map((course) => (
-                                        <tr key={`${course.course_id}-${Math.random() * 100}`}>
-                                            <td className="bold">{cleanText(course?.name)}</td>
-                                            <td>{course.course_id}</td>
-                                            <td>{course.price}</td>
-                                            <td>{course.location}</td>
-                                            <td> {dateFormatter(course.starts_at)} - {dateFormatter(course.ends_at)}</td>
-                                            <td>
-                                                <Link href={course.link}>
-                                                    Register <Svg src={ArrowUpRight} />
-                                                </Link>
-                                            </td>
-                                        </tr>
-                                    ))}
-                                </tbody>
-                            </table>
+                            {data && data.courses.data.length === 0 ?
+                                (<p>There's no data available</p>)
+                                : (
+                                    <table>
+                                        <thead>
+                                            <tr>
+                                                <th>Course</th>
+                                                <th>ID</th>
+                                                <th>Price</th>
+                                                <th>Location</th>
+                                                <th>Dates</th>
+                                                <th>Link</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {data && data.courses.data.map((course) => (
+                                                <tr key={`${course.course_id}-${Math.random() * 100}`}>
+                                                    <td className="bold">{cleanText(course?.name)}</td>
+                                                    <td>{course.course_id}</td>
+                                                    <td>{course.price}</td>
+                                                    <td>{course.location}</td>
+                                                    <td> {dateFormatter(course.starts_at)} - {dateFormatter(course.ends_at)}</td>
+                                                    <td>
+                                                        <Link href={course.link}>
+                                                            Register <Svg src={ArrowUpRight} />
+                                                        </Link>
+                                                    </td>
+                                                </tr>
+                                            ))}
+                                        </tbody>
+                                    </table>)}
+
                         </TableContainer>
                         {currentPage <= lastPage && <Button onClick={() => { handleClick() }}>Load more <Svg src={ChevronDown} /></Button>}
                     </>
