@@ -136,7 +136,7 @@ const DataTable = () => {
     return (
         <Container>
             <Heading>Training Courses</Heading>
-            <Selection filteredParam={filteredParam} setFilteredParam={setFilteredParam}></Selection>
+            <Selection setFilteredParam={setFilteredParam}></Selection>
             <Main>
                 {loading ? (
                     <>
@@ -169,9 +169,9 @@ const DataTable = () => {
                 ) : (
                     <>
                         <TableContainer>
-                            {data && data.courses.data.length === 0 ?
+                            {data?.length && data?.courses?.data?.length === 0 ?
                                 (<p>There's no data available</p>)
-                                : (
+                                : (data?.length ? (
                                     <table>
                                         <thead>
                                             <tr>
@@ -184,7 +184,7 @@ const DataTable = () => {
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            {data && data.courses.data.map((course) => (
+                                            {data?.courses?.data?.map((course) => (
                                                 <tr key={`${course.course_id}-${Math.random() * 100}`}>
                                                     <td className="bold">{cleanText(course?.name)}</td>
                                                     <td>{course.course_id}</td>
@@ -199,7 +199,12 @@ const DataTable = () => {
                                                 </tr>
                                             ))}
                                         </tbody>
-                                    </table>)}
+                                    </table>
+                                ) : (
+                                    <p>There's no data to display 😭</p>
+                                )
+
+                                )}
                         </TableContainer>
                         {currentPage < lastPage && <Button onClick={() => { handleClick() }}>Load more <Svg src={ChevronDown} /></Button>}
                     </>

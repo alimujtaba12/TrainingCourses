@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import styled from 'styled-components';
 import axiosRequest from "../Api/Axios";
+import { LoadingBlock } from "../Loading-block/LoadingBlock";
 
 const Wrapper = styled.div`
     margin-bottom: 28px;
@@ -39,7 +40,7 @@ const Chip = styled.div`
     text-align: center;
 `;
 
-const Selection = ({ filteredParam, setFilteredParam }) => {
+const Selection = ({ setFilteredParam }) => {
     const CATEGORIES_API_ENDPOINT = "https://frontend-trial-api.qa.parallax.dev/api/categories";
     const LOCATIONS_API_ENDPOINT = "https://frontend-trial-api.qa.parallax.dev/api/locations";
 
@@ -99,26 +100,32 @@ const Selection = ({ filteredParam, setFilteredParam }) => {
     return (
         <Wrapper>
             <Flex>
-                {!loading && categories &&
+                {loading ? (
+                    <LoadingBlock height="24px" width="164px"></LoadingBlock>
+                ) : (
+                    categories?.courses?.data?.length &&
                     <Select defaultValue={'DEFAULT'} onChange={(e) => { handleCateogriesChange(e) }}>
                         <option value="DEFAULT" disabled>Category</option>
                         {
-                            categories?.courses?.data.map((category, index) => (
+                            categories?.courses?.data?.map((category, index) => (
                                 <option value={category?.name} key={`${index}-category`}>{category?.name}</option>
                             ))
                         }
                     </Select>
-                }
-                {!loading && location &&
+                )}
+                {loading ? (
+                    <LoadingBlock height="24px" width="164px"></LoadingBlock>
+                ) : (
+                    location?.courses?.data?.length &&
                     <Select defaultValue={'DEFAULT'} disabled={selectedCatergory.length < 1 ? true : false} onChange={(e) => { handleLocationsChange(e) }}>
                         <option value="DEFAULT" disabled>Location</option>
                         {
-                            location?.courses?.data.map((location, index) => (
+                            location?.courses?.data?.map((location, index) => (
                                 <option value={location?.name} key={`${index}-category`}>{location?.name}</option>
                             ))
                         }
                     </Select>
-                }
+                )}
             </Flex>
             <Flex>
                 <Flex>
