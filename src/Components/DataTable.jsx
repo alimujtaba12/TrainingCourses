@@ -60,7 +60,6 @@ const TableContainer = styled.div`
 const DataTable = () => {
     const API_ENDPOINT = "https://frontend-trial-api.qa.parallax.dev/api/courses";
     const [data, setData] = useState();
-    const [filteredData, setFilteredDataData] = useState();
     const [loading, setLoading] = useState(false);
     const [filteredParam, setFilteredParam] = useState();
     const [currentPage, setCurrentPage] = useState(0);
@@ -84,7 +83,7 @@ const DataTable = () => {
             setLoading(true);
             axios.post(API_ENDPOINT, filteredParam)
                 .then(function (res) {
-                    setFilteredDataData(res);
+                    setData(res?.data);
                     setCurrentPage(res?.courses?.current_page);
                     setLastPage(res?.courses?.last_page)
                     setLoading(false);
@@ -95,15 +94,8 @@ const DataTable = () => {
                 });
         }
 
-    }, [filteredParam])
+    }, [filteredParam, currentPage, lastPage])
 
-    useEffect(() => {
-        if (filteredData !== undefined) {
-            setLoading(true);
-            setData(filteredData?.data);
-            setLoading(false);
-        }
-    }, [filteredData])
 
     const handleClick = () => {
         if (currentPage <= lastPage) {
@@ -191,7 +183,6 @@ const DataTable = () => {
                                             ))}
                                         </tbody>
                                     </table>)}
-
                         </TableContainer>
                         {currentPage <= lastPage && <Button onClick={() => { handleClick() }}>Load more <Svg src={ChevronDown} /></Button>}
                     </>
