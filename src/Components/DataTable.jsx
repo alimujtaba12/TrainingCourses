@@ -93,8 +93,7 @@ const DataTable = () => {
                     alert(error);
                 });
         }
-
-    }, [filteredParam, currentPage, lastPage])
+    }, [filteredParam])
 
 
     const handleClick = () => {
