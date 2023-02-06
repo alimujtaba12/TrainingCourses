@@ -84,8 +84,8 @@ const DataTable = () => {
             axios.post(API_ENDPOINT, filteredParam)
                 .then(function (res) {
                     setData(res?.data);
-                    setCurrentPage(res?.courses?.current_page);
-                    setLastPage(res?.courses?.last_page)
+                    setCurrentPage(res?.data?.courses?.current_page);
+                    setLastPage(res?.data?.courses?.last_page)
                     setLoading(false);
                 })
                 .catch(function (error) {
@@ -95,23 +95,41 @@ const DataTable = () => {
         }
     }, [filteredParam])
 
-
     const handleClick = () => {
         if (currentPage <= lastPage) {
-            setLoading(true);
-            axiosRequest(`${API_ENDPOINT}?page=${currentPage + 1}`, 'GET').then((res) => {
-                setData(prevState => ({
-                    courses: {
-                        ...prevState,
-                        data: [...prevState.courses.data, ...res?.courses?.data]
-                    }
-                }));
-                setCurrentPage(currentPage + 1);
-                setLoading(false);
-            }).catch(err => {
-                setLoading(false);
-                alert(err.error)
-            })
+            if (filteredParam?.categories.length && filteredParam?.locations.length) {
+                setLoading(true);
+                axios.post(`${API_ENDPOINT}?page=${currentPage + 1}`, filteredParam)
+                    .then(function (res) {
+                        setData(prevState => ({
+                            courses: {
+                                ...prevState,
+                                data: [...prevState?.courses?.data, ...res?.data?.courses?.data]
+                            }
+                        }));
+                        setCurrentPage(currentPage + 1);
+                        setLoading(false);
+                    })
+                    .catch(function (error) {
+                        setLoading(false);
+                        alert(error);
+                    });
+            } else {
+                setLoading(true);
+                axiosRequest(`${API_ENDPOINT}?page=${currentPage + 1}`, 'GET').then((res) => {
+                    setData(prevState => ({
+                        courses: {
+                            ...prevState,
+                            data: [...prevState.courses.data, ...res?.courses?.data]
+                        }
+                    }));
+                    setCurrentPage(currentPage + 1);
+                    setLoading(false);
+                }).catch(err => {
+                    setLoading(false);
+                    alert(err.error)
+                })
+            }
         }
     }
 
@@ -183,7 +201,7 @@ const DataTable = () => {
                                         </tbody>
                                     </table>)}
                         </TableContainer>
-                        {currentPage <= lastPage && <Button onClick={() => { handleClick() }}>Load more <Svg src={ChevronDown} /></Button>}
+                        {currentPage < lastPage && <Button onClick={() => { handleClick() }}>Load more <Svg src={ChevronDown} /></Button>}
                     </>
                 )}
             </Main>
