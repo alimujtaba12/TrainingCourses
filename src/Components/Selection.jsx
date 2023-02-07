@@ -135,7 +135,7 @@ const Selection = ({ setFilteredParam }) => {
                 </Flex>
                 <Flex>
                     {selectedLocation?.map((item, index) => (
-                        <Chip key={`${index}-category`}>{item}</Chip>
+                        <Chip key={`${index}-location`}>{item}</Chip>
                     ))}
                 </Flex>
             </Flex>

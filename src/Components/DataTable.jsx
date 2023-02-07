@@ -82,7 +82,7 @@ const DataTable = () => {
         if (filteredParam?.categories.length && filteredParam?.locations.length) {
             setLoading(true);
             axios.post(API_ENDPOINT, filteredParam)
-                .then(function (res) {
+                .then((res) => {
                     setData(res?.data);
                     setCurrentPage(res?.data?.courses?.current_page);
                     setLastPage(res?.data?.courses?.last_page)
@@ -97,10 +97,10 @@ const DataTable = () => {
 
     const handleClick = () => {
         if (currentPage <= lastPage) {
-            if (filteredParam?.categories.length && filteredParam?.locations.length) {
+            if (filteredParam?.categories?.length && filteredParam?.locations?.length) {
                 setLoading(true);
                 axios.post(`${API_ENDPOINT}?page=${currentPage + 1}`, filteredParam)
-                    .then(function (res) {
+                    .then((res) => {
                         setData(prevState => ({
                             courses: {
                                 ...prevState,
@@ -120,7 +120,7 @@ const DataTable = () => {
                     setData(prevState => ({
                         courses: {
                             ...prevState,
-                            data: [...prevState.courses.data, ...res?.courses?.data]
+                            data: [...prevState?.courses?.data, ...res?.courses?.data]
                         }
                     }));
                     setCurrentPage(currentPage + 1);
@@ -169,44 +169,45 @@ const DataTable = () => {
                 ) : (
                     <>
                         <TableContainer>
-                            {data?.length && data?.courses?.data?.length === 0 ?
+                            {data && data?.courses?.data?.length === 0 ?
                                 (<p>There's no data available</p>)
-                                : (data?.length ? (
-                                    <table>
-                                        <thead>
-                                            <tr>
-                                                <th>Course</th>
-                                                <th>ID</th>
-                                                <th>Price</th>
-                                                <th>Location</th>
-                                                <th>Dates</th>
-                                                <th>Link</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            {data?.courses?.data?.map((course) => (
-                                                <tr key={`${course.course_id}-${Math.random() * 100}`}>
-                                                    <td className="bold">{cleanText(course?.name)}</td>
-                                                    <td>{course.course_id}</td>
-                                                    <td>{course.price}</td>
-                                                    <td>{course.location}</td>
-                                                    <td> {dateFormatter(course.starts_at)} - {dateFormatter(course.ends_at)}</td>
-                                                    <td>
-                                                        <Link href={course.link}>
-                                                            Register <Svg src={ArrowUpRight} />
-                                                        </Link>
-                                                    </td>
+                                : (
+                                    data?.courses?.data?.length ? (
+                                        <table>
+                                            <thead>
+                                                <tr>
+                                                    <th>Course</th>
+                                                    <th>ID</th>
+                                                    <th>Price</th>
+                                                    <th>Location</th>
+                                                    <th>Dates</th>
+                                                    <th>Link</th>
                                                 </tr>
-                                            ))}
-                                        </tbody>
-                                    </table>
-                                ) : (
-                                    <p>There's no data to display 😭</p>
-                                )
+                                            </thead>
+                                            <tbody>
+                                                {data && data?.courses?.data?.map((course) => (
+                                                    <tr key={`${course?.course_id}-${Math.random() * 100}`}>
+                                                        <td className="bold">{cleanText(course?.name)}</td>
+                                                        <td>{course?.course_id}</td>
+                                                        <td>{course?.price}</td>
+                                                        <td>{course?.location}</td>
+                                                        <td> {dateFormatter(course?.starts_at)} - {dateFormatter(course?.ends_at)}</td>
+                                                        <td>
+                                                            <Link href={course.link}>
+                                                                Register <Svg src={ArrowUpRight} />
+                                                            </Link>
+                                                        </td>
+                                                    </tr>
+                                                ))}
+                                            </tbody>
+                                        </table>
+                                    ) : (
+                                        <p>There's no data to display 😭</p>
+                                    )
 
                                 )}
                         </TableContainer>
-                        {currentPage < lastPage && <Button onClick={() => { handleClick() }}>Load more <Svg src={ChevronDown} /></Button>}
+                        {data?.courses?.data?.length && currentPage < lastPage && <Button onClick={() => { handleClick() }}>Load more <Svg src={ChevronDown} /></Button>}
                     </>
                 )}
             </Main>
