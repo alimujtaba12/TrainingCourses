@@ -169,7 +169,7 @@ const DataTable = () => {
                 ) : (
                     <>
                         <TableContainer>
-                            {data && data?.courses?.data?.length === 0 ?
+                            {data?.courses?.data?.length === 0 ?
                                 (<p>There's no data available</p>)
                                 : (
                                     data?.courses?.data?.length ? (
@@ -185,7 +185,7 @@ const DataTable = () => {
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                {data && data?.courses?.data?.map((course) => (
+                                                {data?.courses?.data?.map((course) => (
                                                     <tr key={`${course?.course_id}-${Math.random() * 100}`}>
                                                         <td className="bold">{cleanText(course?.name)}</td>
                                                         <td>{course?.course_id}</td>
